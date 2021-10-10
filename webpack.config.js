@@ -1,12 +1,19 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 module.exports = {
     mode: 'development', // 実行モード
+    devServer: {
+      static: {
+        directory: path.join(__dirname, "dist"),
+      },
+      hot: true,
+      open: true
+    },
     // entry: './src/js/index.js',
     entry: {
       style: './src/scss/index.scss', // js以外もエントリーポイントにできる
@@ -40,28 +47,27 @@ module.exports = {
       {
         test: /\.(jpe?g|gif|png)$/,
         type: "asset/resource",
-        // generator: {
-        //   filename: "assets/images/[name]-[contenthash].[ext]"
-        // }
       },
-      { // htmlで使用している画像をバンドルする
-        test: /\.html$/i,
-        loader: "html-loader",
+      {
+        test: /\.ejs$/,
+        use: [
+          "html-loader",
+          "ejs-plain-loader"
+        ],
       },
     ]
   },
   plugins: [
     new CleanWebpackPlugin(),
     // 不要なJSファイルは削除
-    new FixStyleOnlyEntriesPlugin({
-      silent: true
-    }),
+    new RemoveEmptyScriptsPlugin(),
     // cssの出力先を指定する
     new MiniCssExtractPlugin({
       filename: './assets/css/[name].css'
     }),
     new HtmlWebpackPlugin({
-      template: 'src/index.html'
-    })
+      template: path.resolve(__dirname, 'src' , 'index.ejs'),
+      filename: './index.html',
+    }),
   ],
 }
