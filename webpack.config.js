@@ -6,56 +6,57 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 module.exports = {
-    mode: 'development', // 実行モード
-    devServer: {
-      static: {
-        directory: path.join(__dirname, "dist"),
-      },
-      hot: true,
-      open: true
+  mode: 'development', // 実行モード
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist'),
     },
-    // entry: './src/js/index.js',
-    entry: {
-      style: './src/scss/index.scss', // js以外もエントリーポイントにできる
-    },
-    output: { // 出力設定
-        path: path.resolve(__dirname, 'dist'), // 絶対パス
-        assetModuleFilename: './assets/images/[hash][ext]',
-    },
-    module: {
+    hot: true,
+    open: true,
+  },
+  // entry: './src/js/index.js',
+  entry: {
+    style: './src/scss/index.scss', // js以外もエントリーポイントにできる
+  },
+  output: {
+    // 出力設定
+    path: path.resolve(__dirname, 'dist'), // 絶対パス
+    assetModuleFilename: './assets/images/[hash][ext]',
+  },
+  module: {
     rules: [
       {
         test: /\.scss$/, // 対象となるファイルの拡張子
         use: [
-          { // JSデータをCSSとして外部ファイル化
-            loader: MiniCssExtractPlugin.loader
+          {
+            // JSデータをCSSとして外部ファイル化
+            loader: MiniCssExtractPlugin.loader,
           },
-          { // CSSをJSに変換
+          {
+            // CSSをJSに変換
             loader: 'css-loader',
           },
-          { // SCSSをCSSに変換
+          {
+            // SCSSをCSSに変換
             loader: 'sass-loader',
             options: {
               sourceMap: true,
               sassOptions: {
-                outputStyle: "compressed",
+                outputStyle: 'compressed',
               },
             },
           },
-        ]
+        ],
       },
       {
         test: /\.(jpe?g|gif|png)$/,
-        type: "asset/resource",
+        type: 'asset/resource',
       },
       {
         test: /\.ejs$/,
-        use: [
-          "html-loader",
-          "ejs-plain-loader"
-        ],
+        use: ['html-loader', 'ejs-plain-loader'],
       },
-    ]
+    ],
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -63,11 +64,19 @@ module.exports = {
     new RemoveEmptyScriptsPlugin(),
     // cssの出力先を指定する
     new MiniCssExtractPlugin({
-      filename: './assets/css/[name].css'
+      filename: './assets/css/[name].css',
     }),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'src' , 'index.ejs'),
+      template: path.resolve(__dirname, 'src', 'index.ejs'),
       filename: './index.html',
     }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'src', 'contact.ejs'),
+      filename: './contact.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'src', 'philosophy.ejs'),
+      filename: './philosophy.html',
+    }),
   ],
-}
+};
